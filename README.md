@@ -2,7 +2,11 @@
 
 **Live:** https://bediga-labs.github.io/rti-helper/
 
-Write a correct Right to Information (RTI) application or first appeal in 2 minutes, in Telugu or English, on a phone.
+Write a complaint, a correct Right to Information (RTI) application, or a first appeal in 2 minutes, in Telugu or English, on a phone.
+
+The citizen's path: **complain** → no action in 30 days? **ask by RTI** what happened → no reply? **first appeal**.
+
+- Complaint letters to the right office head (Commissioner, Panchayat Secretary, MPDO, Tahsildar, Executive Engineer, Collector's Prajavani) for damaged roads, blocked drains, water, street lights, garbage; optional space for neighbours' signatures
 
 - Common Karimnagar offices: Municipal Corporation, Gram Panchayat, MPDO, Tahsildar, Panchayat Raj, R&B, drinking water, Collectorate
 - Ready questions for road/drain works, drinking water, street lights, and "where is my application?"

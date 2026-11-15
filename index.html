@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#14213D">
-<meta name="description" content="Write a correct RTI application or first appeal in Telugu or English in 2 minutes. Free, works on your phone, nothing is sent anywhere. By Bediga Labs, Karimnagar.">
+<meta name="description" content="Write a complaint, a correct RTI application or a first appeal in Telugu or English in 2 minutes. Free, works on your phone, nothing is sent anywhere. By Bediga Labs, Karimnagar.">
 <title>RTI Helper · Bediga Labs</title>
 <style>
   :root { --bg:#f6f4ee; --card:#fff; --ink:#1a1a24; --muted:#5f6472; --line:#e3e0d6; --brand:#14213D; --teal:#2A9D8F; --soft:#e9f5f3; }
@@ -12,6 +12,7 @@
     :root { --bg:#11131a; --card:#1b1e28; --ink:#f1f1f4; --muted:#a3a8b5; --line:#2b2f3c; --teal:#3cc0b0; --soft:#16302d; }
   }
   * { box-sizing:border-box; }
+  [hidden] { display:none !important; }
   body { margin:0; background:var(--bg); color:var(--ink);
          font:16px/1.5 system-ui,-apple-system,"Segoe UI","Noto Sans Telugu","Nirmala UI",sans-serif; }
   header { background:var(--brand); color:#fff; padding:18px 16px; }
@@ -53,16 +54,18 @@
 <body>
 <header>
   <h1>సమాచార హక్కు సహాయం · RTI Helper</h1>
-  <p>Write a correct RTI application or first appeal in 2 minutes. Telugu or English. Free.</p>
+  <p>Write a complaint, an RTI application or a first appeal in 2 minutes. Telugu or English. Free.</p>
 </header>
 <main>
 
   <section>
     <h2><span class="n">1</span>What do you need? · ఏం కావాలి?</h2>
     <div class="seg" id="modeSeg">
-      <button data-mode="apply" class="on">RTI application<br><small>దరఖాస్తు</small></button>
+      <button data-mode="complaint">Complaint<br><small>ఫిర్యాదు</small></button>
+      <button data-mode="apply" class="on">RTI application<br><small>సమాచార హక్కు</small></button>
       <button data-mode="appeal">First appeal<br><small>మొదటి అప్పీలు</small></button>
     </div>
+    <p class="muted">Order: complain first → no action in 30 days? ask by RTI → no reply? first appeal.</p>
     <label>Letter language · లేఖ భాష</label>
     <div class="seg" id="langSeg">
       <button data-lang="te" class="on">తెలుగు</button>
@@ -80,6 +83,20 @@
     </div>
     <label for="place">Village / town / mandal · గ్రామం / పట్టణం / మండలం</label>
     <input id="place" value="Karimnagar">
+  </section>
+
+  <section id="complaintBox" hidden>
+    <h2><span class="n">3</span>What is the problem? · సమస్య ఏమిటి?</h2>
+    <label for="problem">Problem · సమస్య</label>
+    <select id="problem"></select>
+    <label for="cLoc">Exact place (street, ward, colony, landmark) · ఖచ్చితమైన చోటు</label>
+    <input id="cLoc" placeholder="e.g. Ward 12, near Hanuman temple, Mukarampura">
+    <label for="since">Since when? · ఎప్పటి నుండి?</label>
+    <input id="since" type="date">
+    <label for="details">More details (optional) · మరిన్ని వివరాలు</label>
+    <textarea id="details" style="min-height:80px" placeholder="e.g. two children fell last week; complained by phone on 3 Nov, no action"></textarea>
+    <label class="check"><input type="checkbox" id="neighbours"> Add space for neighbours' signatures · ఇరుగుపొరుగు సంతకాలకు చోటు</label>
+    <p class="muted">A complaint signed by many residents gets more attention than one person's.</p>
   </section>
 
   <section id="applyBox">
@@ -139,7 +156,17 @@
     <p class="muted">Nothing you type leaves your phone. Read the letter once before you sign it.</p>
   </section>
 
-  <section>
+  <section id="complaintTips" hidden>
+    <h2>After you submit · ఫిర్యాదు తర్వాత</h2>
+    <ul class="tips">
+      <li><b>Take 2 copies.</b> Give one; get the second copy stamped and dated by the office (your proof).</li>
+      <li>Note the <b>petition / grievance number</b> if they give one.</li>
+      <li>District-level complaints can also go to the Collector's <b>Prajavani</b> grievance day (usually Mondays at the Collectorate; confirm locally).</li>
+      <li><b>No action in 30 days?</b> Ask what happened, by law: <button id="toRti" style="padding:6px 10px">Write an RTI about this complaint →</button></li>
+    </ul>
+  </section>
+
+  <section id="rtiTips">
     <h2>After you file · దరఖాస్తు తర్వాత</h2>
     <ul class="tips">
       <li><b>Fee ₹10</b> (BPL families: free, attach a copy of the card). Offices accept different modes (Indian Postal Order, demand draft, cash with receipt, court-fee stamp), so ask the office which one.</li>
@@ -172,6 +199,39 @@ const OFFICES = [
   ['coll', 'District Collectorate', 'జిల్లా కలెక్టరేట్'],
   ['other', 'Other office', 'ఇతర కార్యాలయం'],
 ];
+
+// Who a complaint goes to (the head of the office, not the PIO)
+const HEADS = {
+  kmc: ['The Commissioner, Karimnagar Municipal Corporation', 'కమిషనర్ గారికి, కరీంనగర్ మున్సిపల్ కార్పొరేషన్'],
+  gp: ['The Panchayat Secretary, Gram Panchayat', 'పంచాయతీ కార్యదర్శి గారికి, గ్రామ పంచాయతీ'],
+  mpdo: ['The Mandal Parishad Development Officer (MPDO)', 'మండల పరిషత్ అభివృద్ధి అధికారి (MPDO) గారికి'],
+  tah: ['The Tahsildar', 'తహసీల్దార్ గారికి'],
+  pr: ['The Executive Engineer, Panchayat Raj Engineering Department', 'కార్యనిర్వాహక ఇంజనీర్ గారికి, పంచాయతీ రాజ్ ఇంజనీరింగ్ విభాగం'],
+  rb: ['The Executive Engineer, Roads and Buildings Department', 'కార్యనిర్వాహక ఇంజనీర్ గారికి, రోడ్లు మరియు భవనాల శాఖ'],
+  water: ['The Executive Engineer, Rural Water Supply / Mission Bhagiratha', 'కార్యనిర్వాహక ఇంజనీర్ గారికి, గ్రామీణ నీటి సరఫరా / మిషన్ భగీరథ'],
+  coll: ['The District Collector (Prajavani)', 'జిల్లా కలెక్టర్ గారికి (ప్రజావాణి)'],
+};
+
+// {L} = place
+const PROBLEMS = {
+  road: { en: 'Damaged road', te: 'దెబ్బతిన్న రోడ్డు',
+    sen: 'The road at {L} is badly damaged with potholes. It is causing accidents and great difficulty to residents.',
+    ste: '{L} లో రోడ్డు గుంతలతో బాగా దెబ్బతింది. ప్రమాదాలు జరుగుతున్నాయి, ప్రజలు చాలా ఇబ్బంది పడుతున్నారు.' },
+  drain: { en: 'Blocked / overflowing drain', te: 'మూసుకుపోయిన / పొంగుతున్న డ్రైనేజీ',
+    sen: 'The drain at {L} is blocked and overflowing, causing bad smell, mosquitoes and a risk of disease.',
+    ste: '{L} లో డ్రైనేజీ మూసుకుపోయి పొంగిపొర్లుతోంది. దుర్వాసన, దోమలు, రోగాల భయంతో ఇబ్బంది పడుతున్నాం.' },
+  water: { en: 'No proper drinking water', te: 'తాగునీటి సరఫరా సరిగ్గా లేదు',
+    sen: 'Drinking water is not being supplied properly at {L}.',
+    ste: '{L} లో తాగునీటి సరఫరా సరిగ్గా జరగడం లేదు.' },
+  light: { en: 'Street lights not working', te: 'వీధి దీపాలు పనిచేయడం లేదు',
+    sen: 'The street lights at {L} are not working, and the area is unsafe at night.',
+    ste: '{L} లో వీధి దీపాలు పనిచేయడం లేదు. రాత్రిపూట ఆ ప్రాంతం సురక్షితంగా లేదు.' },
+  garbage: { en: 'Garbage not collected', te: 'చెత్త సేకరించడం లేదు',
+    sen: 'Garbage is not being collected regularly at {L}.',
+    ste: '{L} లో చెత్త క్రమం తప్పకుండా సేకరించడం లేదు.' },
+  other: { en: 'Other problem', te: 'ఇతర సమస్య', sen: 'I wish to bring the following problem at {L} to your notice.',
+    ste: '{L} లో ఉన్న కింది సమస్యను మీ దృష్టికి తీసుకువస్తున్నాను.' },
+};
 
 // {L} = location, {N} = application number, {D} = application date, {T} = what it was for
 const TOPICS = {
@@ -224,6 +284,7 @@ function fillSelect(sel, items) {
 }
 fillSelect($('office'), OFFICES);
 fillSelect($('topic'), Object.entries(TOPICS).map(([k, t]) => [k, t.en, t.te]));
+fillSelect($('problem'), Object.entries(PROBLEMS).map(([k, t]) => [k, t.en, t.te]));
 
 const fmtDate = s => { if (!s) return ''; const [y, m, d] = s.split('-'); return `${d}-${m}-${y}`; };
 const today = () => fmtDate(new Date().toISOString().slice(0, 10));
@@ -254,7 +315,63 @@ function applicant() {
   return lines.join('\n');
 }
 
+function complaintLetter() {
+  const place = $('place').value.trim() || '______';
+  const v = $('office').value;
+  const head = v === 'other'
+    ? (lang === 'te' ? `అధికారి గారికి, ${officeName()}` : `The Officer-in-charge, ${officeName()}`)
+    : HEADS[v][lang === 'te' ? 1 : 0];
+  const pr = PROBLEMS[$('problem').value];
+  const L = $('cLoc').value.trim() || '______';
+  const since = fmtDate($('since').value);
+  const det = $('details').value.trim();
+  const signs = $('neighbours').checked
+    ? '\n\n' + (lang === 'te' ? 'ఇతర నివాసుల సంతకాలు:' : 'Signatures of other residents:') + '\n' +
+      [1, 2, 3, 4, 5, 6].map(i => `${i}. ${lang === 'te' ? 'పేరు' : 'Name'} ____________  ${lang === 'te' ? 'సంతకం' : 'Signature'} ________`).join('\n')
+    : '';
+  if (lang === 'en') return `To
+${head},
+${place}.
+
+Subject: Complaint regarding ${pr.en.toLowerCase()} at ${L}
+
+Sir/Madam,
+
+${pr.sen.replace('{L}', L)}${since ? ` This problem has existed since ${since}.` : ''}
+${det ? '\n' + det + '\n' : ''}
+I request you to kindly inspect the place and take necessary action at the earliest, and inform me of the action taken.
+
+Yours faithfully,
+
+${applicant()}
+
+Date: ${today()}
+Place: ${place}
+
+Signature: ______________${signs}`;
+  return `${head},
+${place}.
+
+విషయం: ${L} లో ${pr.te} గురించి ఫిర్యాదు
+
+అయ్యా/అమ్మా,
+
+${pr.ste.replace('{L}', L)}${since ? ` ఈ సమస్య ${since} నుండి ఉంది.` : ''}
+${det ? '\n' + det + '\n' : ''}
+దయచేసి స్థలాన్ని పరిశీలించి, వీలైనంత త్వరగా తగిన చర్యలు తీసుకుని, తీసుకున్న చర్యల గురించి నాకు తెలియజేయవలసిందిగా కోరుతున్నాను.
+
+ఇట్లు,
+
+${applicant()}
+
+తేదీ: ${today()}
+స్థలం: ${place}
+
+సంతకం: ______________${signs}`;
+}
+
 function letter() {
+  if (mode === 'complaint') return complaintLetter();
   const off = officeName(), place = $('place').value.trim() || '______', bpl = $('bpl').checked;
   const q = $('questions').value.trim() || '1. ______';
   if (mode === 'apply' && lang === 'en') return `To
@@ -379,6 +496,9 @@ function render() {
   $('otherBox').hidden = $('office').value !== 'other';
   $('applyBox').hidden = mode !== 'apply';
   $('appealBox').hidden = mode !== 'appeal';
+  $('complaintBox').hidden = mode !== 'complaint';
+  $('complaintTips').hidden = mode !== 'complaint';
+  $('rtiTips').hidden = mode === 'complaint';
   $('bplRow').hidden = mode !== 'apply';
   const t = TOPICS[$('topic').value];
   $('locBox').hidden = !t.loc;
@@ -400,6 +520,16 @@ $('topic').onchange = () => { edited = false; refreshQuestions(); render(); };
 $('questions').addEventListener('input', () => { edited = true; render(); });
 document.querySelectorAll('input, select, textarea').forEach(el => el.addEventListener('input', render));
 $('office').addEventListener('change', render);
+
+// From a complaint to an RTI asking what happened to it
+$('toRti').onclick = () => {
+  const pr = PROBLEMS[$('problem').value], L = $('cLoc').value.trim();
+  $('appType').value = lang === 'te' ? `${L ? L + ' లో ' : ''}${pr.te} గురించి ఫిర్యాదు` : `complaint about ${pr.en.toLowerCase()}${L ? ' at ' + L : ''}`;
+  $('topic').value = 'mine'; edited = false;
+  mode = 'apply';
+  $('modeSeg').querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.mode === 'apply'));
+  refreshQuestions(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+};
 
 $('printBtn').onclick = () => window.print();
 $('copyBtn').onclick = async () => {

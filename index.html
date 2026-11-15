@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="te">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#14213D">
+<meta name="description" content="Write a correct RTI application or first appeal in Telugu or English in 2 minutes. Free, works on your phone, nothing is sent anywhere. By Bediga Labs, Karimnagar.">
+<title>RTI Helper · Bediga Labs</title>
+<style>
+  :root { --bg:#f6f4ee; --card:#fff; --ink:#1a1a24; --muted:#5f6472; --line:#e3e0d6; --brand:#14213D; --teal:#2A9D8F; --soft:#e9f5f3; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#11131a; --card:#1b1e28; --ink:#f1f1f4; --muted:#a3a8b5; --line:#2b2f3c; --teal:#3cc0b0; --soft:#16302d; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font:16px/1.5 system-ui,-apple-system,"Segoe UI","Noto Sans Telugu","Nirmala UI",sans-serif; }
+  header { background:var(--brand); color:#fff; padding:18px 16px; }
+  header h1 { margin:0; font-size:22px; }
+  header p { margin:4px 0 0; color:#c9d3e6; font-size:14px; }
+  main { max-width:720px; margin:0 auto; padding:16px; }
+  section { background:var(--card); border:2px solid var(--line); border-radius:16px; padding:16px; margin-bottom:14px; }
+  h2 { margin:0 0 10px; font-size:17px; }
+  h2 .n { display:inline-block; width:26px; height:26px; border-radius:50%; background:var(--teal); color:#fff;
+          text-align:center; line-height:26px; font-size:14px; margin-right:6px; }
+  label { display:block; font-size:14px; color:var(--muted); margin:10px 0 4px; }
+  input, select, textarea { width:100%; font:inherit; color:var(--ink); background:var(--bg); border:1.5px solid var(--line);
+                            border-radius:10px; padding:10px; }
+  textarea { min-height:150px; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:520px) { .row { grid-template-columns:1fr; } }
+  .seg { display:flex; gap:8px; flex-wrap:wrap; }
+  .seg button { flex:1; min-width:120px; }
+  button { font:inherit; border:0; border-radius:12px; padding:12px 14px; cursor:pointer; background:var(--soft); color:var(--ink); }
+  button.on, button.main { background:var(--teal); color:#fff; font-weight:600; }
+  .check { display:flex; gap:10px; align-items:center; margin-top:12px; color:var(--ink); }
+  .check input { width:22px; height:22px; }
+  #letter { white-space:pre-wrap; background:#fff; color:#111; border:1px solid var(--line); border-radius:10px; padding:18px;
+            font:15px/1.6 "Noto Sans Telugu","Nirmala UI",Georgia,serif; }
+  .bar { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+  .bar button { flex:1; min-width:140px; }
+  .tips li { margin:6px 0; }
+  .muted { color:var(--muted); font-size:14px; }
+  footer { text-align:center; color:var(--muted); font-size:13px; padding:10px 16px 30px; }
+  footer a { color:var(--teal); }
+  @media print {
+    body { background:#fff; }
+    header, footer, section:not(#out), #out h2, #out .bar, #out .muted { display:none !important; }
+    #out { border:0; padding:0; margin:0; }
+    #letter { border:0; padding:0; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>సమాచార హక్కు సహాయం · RTI Helper</h1>
+  <p>Write a correct RTI application or first appeal in 2 minutes. Telugu or English. Free.</p>
+</header>
+<main>
+
+  <section>
+    <h2><span class="n">1</span>What do you need? · ఏం కావాలి?</h2>
+    <div class="seg" id="modeSeg">
+      <button data-mode="apply" class="on">RTI application<br><small>దరఖాస్తు</small></button>
+      <button data-mode="appeal">First appeal<br><small>మొదటి అప్పీలు</small></button>
+    </div>
+    <label>Letter language · లేఖ భాష</label>
+    <div class="seg" id="langSeg">
+      <button data-lang="te" class="on">తెలుగు</button>
+      <button data-lang="en">English</button>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>Which office? · ఏ కార్యాలయం?</h2>
+    <label for="office">Office · కార్యాలయం</label>
+    <select id="office"></select>
+    <div id="otherBox" hidden>
+      <label for="otherOffice">Office name · కార్యాలయం పేరు</label>
+      <input id="otherOffice" placeholder="e.g. Sub-Registrar Office">
+    </div>
+    <label for="place">Village / town / mandal · గ్రామం / పట్టణం / మండలం</label>
+    <input id="place" value="Karimnagar">
+  </section>
+
+  <section id="applyBox">
+    <h2><span class="n">3</span>What information? · ఏ సమాచారం?</h2>
+    <label for="topic">Topic · అంశం</label>
+    <select id="topic"></select>
+    <div id="locBox">
+      <label for="loc">Exact location of the work (street, ward, colony) · పని జరిగే చోటు</label>
+      <input id="loc" placeholder="e.g. Ward 12, Mukarampura main road">
+    </div>
+    <div id="myAppBox" hidden>
+      <div class="row">
+        <div><label for="appNo">My application number · దరఖాస్తు సంఖ్య</label><input id="appNo"></div>
+        <div><label for="appDate">Date I applied · దరఖాస్తు తేదీ</label><input id="appDate" type="date"></div>
+      </div>
+      <label for="appType">What was it for? · దేని కోసం?</label>
+      <input id="appType" placeholder="e.g. old-age pension, ration card, house">
+    </div>
+    <label for="questions">Questions (you can edit) · ప్రశ్నలు (మార్చవచ్చు)</label>
+    <textarea id="questions"></textarea>
+    <p class="muted">Ask for documents, numbers, dates and copies. RTI gives facts on record, not opinions or "why" answers.</p>
+  </section>
+
+  <section id="appealBox" hidden>
+    <h2><span class="n">3</span>About your RTI application · మీ దరఖాస్తు</h2>
+    <div class="row">
+      <div><label for="rtiDate">Date you filed the RTI · దరఖాస్తు చేసిన తేదీ</label><input id="rtiDate" type="date"></div>
+      <div><label for="replyDate">Reply date, if any · సమాధానం తేదీ (ఉంటే)</label><input id="replyDate" type="date"></div>
+    </div>
+    <label for="ground">What went wrong? · సమస్య ఏమిటి?</label>
+    <select id="ground">
+      <option value="noreply">No reply in 30 days · 30 రోజుల్లో సమాధానం రాలేదు</option>
+      <option value="incomplete">Reply is incomplete · సమాధానం అసంపూర్తి</option>
+      <option value="refused">Information refused · సమాచారం నిరాకరించారు</option>
+    </select>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>Your details · మీ వివరాలు</h2>
+    <div class="row">
+      <div><label for="name">Name · పేరు</label><input id="name" autocomplete="name"></div>
+      <div><label for="phone">Phone (optional) · ఫోన్</label><input id="phone" inputmode="tel" autocomplete="tel"></div>
+    </div>
+    <label for="addr">Full address for the reply · పూర్తి చిరునామా</label>
+    <textarea id="addr" style="min-height:70px"></textarea>
+    <label class="check" id="bplRow"><input type="checkbox" id="bpl"> BPL / white ration card family (no fee) · తెల్ల రేషన్ కార్డు (రుసుము లేదు)</label>
+  </section>
+
+  <section id="out">
+    <h2><span class="n">5</span>Your letter · మీ లేఖ</h2>
+    <div id="letter"></div>
+    <div class="bar">
+      <button class="main" id="printBtn">🖨 Print / Save PDF</button>
+      <button id="copyBtn">📋 Copy</button>
+      <button id="waBtn">💬 WhatsApp</button>
+    </div>
+    <p class="muted">Nothing you type leaves your phone. Read the letter once before you sign it.</p>
+  </section>
+
+  <section>
+    <h2>After you file · దరఖాస్తు తర్వాత</h2>
+    <ul class="tips">
+      <li><b>Fee ₹10</b> (BPL families: free, attach a copy of the card). Offices accept different modes (Indian Postal Order, demand draft, cash with receipt, court-fee stamp), so ask the office which one.</li>
+      <li><b>Submit</b> in person (get a stamped acknowledgement copy) or by registered post (keep the receipt). Central government offices: <a href="https://rtionline.gov.in" target="_blank" rel="noopener">rtionline.gov.in</a>.</li>
+      <li><b>Reply due in 30 days</b> (48 hours if it concerns someone's life or liberty).</li>
+      <li><b>No reply or a bad reply?</b> File a <b>first appeal</b> within 30 days to the First Appellate Authority of the same office (use this page). If information was late, it must be given free.</li>
+      <li><b>Still nothing?</b> Second appeal to the Telangana State Information Commission within 90 days of the first-appeal decision.</li>
+    </ul>
+    <p class="muted">This is a writing aid, not legal advice. Fee and payment rules can change; check with the office.</p>
+  </section>
+</main>
+<footer>
+  Made in Karimnagar by <a href="https://github.com/bediga-labs">Bediga Labs</a> · AI tools built for Karimnagar first<br>
+  Need help with an RTI or a public-works question? <a href="mailto:sharanbediga@gmail.com">sharanbediga@gmail.com</a>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+let mode = 'apply', lang = 'te';
+
+const OFFICES = [
+  ['kmc', 'Karimnagar Municipal Corporation', 'కరీంనగర్ మున్సిపల్ కార్పొరేషన్'],
+  ['gp', 'Gram Panchayat', 'గ్రామ పంచాయతీ'],
+  ['mpdo', 'Mandal Parishad Development Officer (MPDO) Office', 'మండల పరిషత్ అభివృద్ధి అధికారి (MPDO) కార్యాలయం'],
+  ['tah', 'Tahsildar Office', 'తహసీల్దార్ కార్యాలయం'],
+  ['pr', 'Panchayat Raj Engineering Department', 'పంచాయతీ రాజ్ ఇంజనీరింగ్ విభాగం'],
+  ['rb', 'Roads and Buildings Department', 'రోడ్లు మరియు భవనాల శాఖ'],
+  ['water', 'Rural Water Supply / Mission Bhagiratha Office', 'గ్రామీణ నీటి సరఫరా / మిషన్ భగీరథ కార్యాలయం'],
+  ['coll', 'District Collectorate', 'జిల్లా కలెక్టరేట్'],
+  ['other', 'Other office', 'ఇతర కార్యాలయం'],
+];
+
+// {L} = location, {N} = application number, {D} = application date, {T} = what it was for
+const TOPICS = {
+  road: { en: 'Road / drain work in my area', te: 'మా ప్రాంతంలో రోడ్డు / డ్రైనేజీ పని', loc: true,
+    q: { en: [
+      'The amount sanctioned for the road/drain work at {L}, and the scheme under which it was sanctioned.',
+      'The name of the contractor/agency doing the work, and the date of the agreement.',
+      'The date the work started and the date by which it must be completed as per the agreement.',
+      'The amount paid so far, with copies of the bills and the measurement book (M-Book) entries.',
+      'Copies of quality inspection reports for this work, if any.' ],
+    te: [
+      '{L} లో జరుగుతున్న/జరిగిన రోడ్డు/డ్రైనేజీ పనికి మంజూరైన మొత్తం, మరియు ఏ పథకం కింద మంజూరైంది.',
+      'పని చేస్తున్న కాంట్రాక్టర్/ఏజెన్సీ పేరు మరియు ఒప్పందం తేదీ.',
+      'పని ప్రారంభమైన తేదీ, మరియు ఒప్పందం ప్రకారం పని పూర్తి కావలసిన తేదీ.',
+      'ఇప్పటివరకు చెల్లించిన మొత్తం, బిల్లులు మరియు కొలతల పుస్తకం (M-Book) నమోదుల నకళ్లతో.',
+      'ఈ పనికి సంబంధించిన నాణ్యత తనిఖీ నివేదికల నకళ్లు (ఉంటే).' ] } },
+  water: { en: 'Drinking water supply', te: 'తాగునీటి సరఫరా', loc: true,
+    q: { en: [
+      'The drinking water supply schedule (days and timings) fixed for {L}.',
+      'The number of complaints about drinking water received from {L} in the last 6 months, and the action taken on each, with dates.',
+      'Works sanctioned to improve water supply in {L}, with the sanctioned amount and present status of each.' ],
+    te: [
+      '{L} కు నిర్ణయించిన తాగునీటి సరఫరా షెడ్యూల్ (రోజులు, సమయాలు).',
+      'గత 6 నెలల్లో {L} నుండి తాగునీటి గురించి వచ్చిన ఫిర్యాదుల సంఖ్య, మరియు ఒక్కోదానిపై తీసుకున్న చర్యలు, తేదీలతో.',
+      '{L} లో నీటి సరఫరా మెరుగుపరచడానికి మంజూరైన పనులు, మంజూరైన మొత్తం, మరియు ఒక్కో పని ప్రస్తుత స్థితి.' ] } },
+  lights: { en: 'Street lights / sanitation', te: 'వీధి దీపాలు / పారిశుధ్యం', loc: true,
+    q: { en: [
+      'Complaints received about street lights/sanitation from {L} in the last 6 months, and the action taken on each, with dates.',
+      'Details of the maintenance contract for street lights/sanitation covering {L}: agency name, contract period and contract amount.' ],
+    te: [
+      'గత 6 నెలల్లో {L} నుండి వీధి దీపాలు/పారిశుధ్యం గురించి వచ్చిన ఫిర్యాదులు, మరియు ఒక్కోదానిపై తీసుకున్న చర్యలు, తేదీలతో.',
+      '{L} కు వర్తించే వీధి దీపాలు/పారిశుధ్య నిర్వహణ కాంట్రాక్టు వివరాలు: ఏజెన్సీ పేరు, కాలవ్యవధి, కాంట్రాక్టు మొత్తం.' ] } },
+  mine: { en: 'Status of my own application', te: 'నా దరఖాస్తు స్థితి', loc: false,
+    q: { en: [
+      'The present status of my application no. {N} dated {D} for {T}.',
+      'The names and designations of the officials with whom this application has been pending, and the dates it reached and left each of them.',
+      'The reasons for the delay, as recorded in the file, and the expected date of decision.',
+      'Copies of the file notings on my application.' ],
+    te: [
+      '{T} కోసం నేను {D} న సమర్పించిన దరఖాస్తు సంఖ్య {N} యొక్క ప్రస్తుత స్థితి.',
+      'ఈ దరఖాస్తు ఏ అధికారుల వద్ద పెండింగ్‌లో ఉంది (పేర్లు, హోదాలు), మరియు ఒక్కొక్కరి వద్దకు చేరిన, వెళ్లిన తేదీలు.',
+      'ఫైల్‌లో నమోదు చేసిన ఆలస్యానికి కారణాలు, మరియు నిర్ణయం తీసుకునే అంచనా తేదీ.',
+      'నా దరఖాస్తు ఫైల్‌లోని నోట్ ఫైల్ (file notings) నకళ్లు.' ] } },
+  own: { en: 'Write my own questions', te: 'నా సొంత ప్రశ్నలు', loc: false, q: { en: [''], te: [''] } },
+};
+
+function fillSelect(sel, items) {
+  sel.innerHTML = '';
+  items.forEach(([v, en, te]) => { const o = document.createElement('option'); o.value = v; o.textContent = te + ' · ' + en; sel.appendChild(o); });
+}
+fillSelect($('office'), OFFICES);
+fillSelect($('topic'), Object.entries(TOPICS).map(([k, t]) => [k, t.en, t.te]));
+
+const fmtDate = s => { if (!s) return ''; const [y, m, d] = s.split('-'); return `${d}-${m}-${y}`; };
+const today = () => fmtDate(new Date().toISOString().slice(0, 10));
+const blank = lang === 'te' ? '______' : '______';
+
+function officeName() {
+  const v = $('office').value;
+  if (v === 'other') return $('otherOffice').value.trim() || '______';
+  const o = OFFICES.find(x => x[0] === v);
+  return lang === 'te' ? o[2] : o[1];
+}
+
+let edited = false;
+function presetQuestions() {
+  const t = TOPICS[$('topic').value];
+  const sub = s => s.replace(/\{L\}/g, $('loc').value.trim() || '______')
+                    .replace(/\{N\}/g, $('appNo').value.trim() || '______')
+                    .replace(/\{D\}/g, fmtDate($('appDate').value) || '______')
+                    .replace(/\{T\}/g, $('appType').value.trim() || '______');
+  const qs = t.q[lang];
+  return qs.length === 1 && !qs[0] ? '1. ' : qs.map((q, i) => `${i + 1}. ${sub(q)}`).join('\n');
+}
+function refreshQuestions() { if (!edited) $('questions').value = presetQuestions(); }
+
+function applicant() {
+  const lines = [$('name').value.trim() || '______', ($('addr').value.trim() || '______')];
+  if ($('phone').value.trim()) lines.push((lang === 'te' ? 'ఫోన్: ' : 'Phone: ') + $('phone').value.trim());
+  return lines.join('\n');
+}
+
+function letter() {
+  const off = officeName(), place = $('place').value.trim() || '______', bpl = $('bpl').checked;
+  const q = $('questions').value.trim() || '1. ______';
+  if (mode === 'apply' && lang === 'en') return `To
+The Public Information Officer,
+${off},
+${place}.
+
+Subject: Request for information under Section 6(1) of the Right to Information Act, 2005
+
+Sir/Madam,
+
+I request the following information under the Right to Information Act, 2005:
+
+${q}
+
+${bpl ? 'My family belongs to the Below Poverty Line (BPL) category. A copy of my card is enclosed, so no fee is payable under Section 7(5).'
+      : 'I am paying the application fee of ₹10 by ______________ (mode of payment).'}
+
+Please provide the information within 30 days, as required by Section 7(1). If any part of this information is held by another public authority, kindly transfer that part of the application under Section 6(3) and inform me.
+
+Yours faithfully,
+
+${applicant()}
+
+Date: ${today()}
+Place: ${place}
+
+Signature: ______________`;
+
+  if (mode === 'apply') return `గౌరవనీయులైన పౌర సమాచార అధికారి (PIO) గారికి,
+${off},
+${place}.
+
+విషయం: సమాచార హక్కు చట్టం, 2005 సెక్షన్ 6(1) కింద సమాచారం కోరుతూ దరఖాస్తు
+
+అయ్యా/అమ్మా,
+
+సమాచార హక్కు చట్టం, 2005 ప్రకారం కింది సమాచారాన్ని అందజేయవలసిందిగా కోరుతున్నాను:
+
+${q}
+
+${bpl ? 'మా కుటుంబం దారిద్ర్య రేఖకు దిగువన (BPL) ఉంది. కార్డు నకలు జతచేశాను, కాబట్టి సెక్షన్ 7(5) ప్రకారం రుసుము వర్తించదు.'
+      : 'దరఖాస్తు రుసుము ₹10 ______________ ద్వారా చెల్లిస్తున్నాను.'}
+
+సెక్షన్ 7(1) ప్రకారం 30 రోజుల్లోగా సమాచారం అందించగలరు. ఈ సమాచారంలో ఏ భాగమైనా వేరే కార్యాలయం వద్ద ఉంటే, సెక్షన్ 6(3) ప్రకారం ఆ భాగాన్ని ఆ కార్యాలయానికి బదిలీ చేసి నాకు తెలియజేయగలరు.
+
+ఇట్లు,
+
+${applicant()}
+
+తేదీ: ${today()}
+స్థలం: ${place}
+
+సంతకం: ______________`;
+
+  const rtiD = fmtDate($('rtiDate').value) || '______', repD = fmtDate($('replyDate').value) || '______';
+  const g = $('ground').value;
+  if (lang === 'en') {
+    const ground = { noreply: 'I have not received any reply within the 30 days allowed under Section 7(1).',
+      incomplete: `The reply dated ${repD} is incomplete: it does not answer the following points: ______________.`,
+      refused: `By reply dated ${repD}, the information was refused. The reasons given are not valid under Sections 8 and 9 of the Act.` }[g];
+    return `To
+The First Appellate Authority,
+${off},
+${place}.
+
+Subject: First appeal under Section 19(1) of the Right to Information Act, 2005
+
+Sir/Madam,
+
+I filed an application under the RTI Act, 2005 with the Public Information Officer, ${off}, on ${rtiD}.
+
+${ground}
+
+I request you to direct the Public Information Officer to provide the complete information${g === 'noreply' ? ' free of cost, as required by Section 7(6) when the time limit is not met' : ''}.
+
+Enclosed:
+1. Copy of my RTI application
+2. Proof of submission (acknowledgement / postal receipt)${g !== 'noreply' ? '\n3. Copy of the reply received' : ''}
+
+Yours faithfully,
+
+${applicant()}
+
+Date: ${today()}
+Place: ${place}
+
+Signature: ______________`;
+  }
+  const groundTe = { noreply: 'సెక్షన్ 7(1) ప్రకారం ఉన్న 30 రోజుల గడువులో నాకు ఎటువంటి సమాధానం రాలేదు.',
+    incomplete: `${repD} నాటి సమాధానం అసంపూర్తిగా ఉంది: కింది అంశాలకు సమాధానం ఇవ్వలేదు: ______________.`,
+    refused: `${repD} నాటి సమాధానంలో సమాచారం ఇవ్వడానికి నిరాకరించారు. చూపిన కారణాలు చట్టంలోని సెక్షన్ 8, 9 ప్రకారం చెల్లవు.` }[g];
+  return `గౌరవనీయులైన మొదటి అప్పీలు అధికారి గారికి,
+${off},
+${place}.
+
+విషయం: సమాచార హక్కు చట్టం, 2005 సెక్షన్ 19(1) కింద మొదటి అప్పీలు
+
+అయ్యా/అమ్మా,
+
+నేను ${rtiD} న ${off} పౌర సమాచార అధికారికి సమాచార హక్కు దరఖాస్తు సమర్పించాను.
+
+${groundTe}
+
+పూర్తి సమాచారాన్ని${g === 'noreply' ? ', గడువు దాటినందున సెక్షన్ 7(6) ప్రకారం ఉచితంగా,' : ''} అందించేలా పౌర సమాచార అధికారిని ఆదేశించవలసిందిగా కోరుతున్నాను.
+
+జతపరచినవి:
+1. నా సమాచార హక్కు దరఖాస్తు నకలు
+2. సమర్పించినట్లు రుజువు (రశీదు / పోస్టల్ రశీదు)${g !== 'noreply' ? '\n3. వచ్చిన సమాధానం నకలు' : ''}
+
+ఇట్లు,
+
+${applicant()}
+
+తేదీ: ${today()}
+స్థలం: ${place}
+
+సంతకం: ______________`;
+}
+
+function render() {
+  $('otherBox').hidden = $('office').value !== 'other';
+  $('applyBox').hidden = mode !== 'apply';
+  $('appealBox').hidden = mode !== 'appeal';
+  $('bplRow').hidden = mode !== 'apply';
+  const t = TOPICS[$('topic').value];
+  $('locBox').hidden = !t.loc;
+  $('myAppBox').hidden = $('topic').value !== 'mine';
+  $('letter').textContent = letter();
+}
+
+function seg(id, attr, set) {
+  $(id).querySelectorAll('button').forEach(b => b.onclick = () => {
+    $(id).querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    set(b.dataset[attr]); refreshQuestions(); render();
+  });
+}
+seg('modeSeg', 'mode', v => mode = v);
+seg('langSeg', 'lang', v => { lang = v; edited = false; });
+
+$('topic').onchange = () => { edited = false; refreshQuestions(); render(); };
+['loc', 'appNo', 'appDate', 'appType'].forEach(id => $(id).addEventListener('input', () => { refreshQuestions(); render(); }));
+$('questions').addEventListener('input', () => { edited = true; render(); });
+document.querySelectorAll('input, select, textarea').forEach(el => el.addEventListener('input', render));
+$('office').addEventListener('change', render);
+
+$('printBtn').onclick = () => window.print();
+$('copyBtn').onclick = async () => {
+  try { await navigator.clipboard.writeText(letter()); $('copyBtn').textContent = '✅ Copied'; }
+  catch { $('copyBtn').textContent = 'Select the letter and copy'; }
+  setTimeout(() => $('copyBtn').textContent = '📋 Copy', 2000);
+};
+$('waBtn').onclick = () => window.open('https://wa.me/?text=' + encodeURIComponent(letter()), '_blank');
+
+refreshQuestions(); render();
+</script>
+</body>
+</html>

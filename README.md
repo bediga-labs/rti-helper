@@ -13,3 +13,5 @@ Write a correct Right to Information (RTI) application or first appeal in 2 minu
 A writing aid, not legal advice. Fee and payment rules can change; check with the office.
 
 Made in Karimnagar by [Bediga Labs](https://github.com/bediga-labs): AI tools built for Karimnagar first.
+
+© 2026 Sharan Bediga (Bediga Labs). All rights reserved. The code is public so anyone can see how it works; it is not licensed for reuse.
